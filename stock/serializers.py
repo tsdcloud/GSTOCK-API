@@ -1,0 +1,66 @@
+from rest_framework import serializers
+from .models import (
+    Supplier, ArticleFamily, Article, Stock, EntryVoucher, ExitRequest, ExitVoucher, ReturnRequest, ReturnVoucher, Service
+)
+
+# from rest_framework.exceptions import NotAuthenticated
+
+# class UserContextMixin:
+#     def validate(self, data):
+#         request = self.context.get('request')
+#         if not request and not request.user:
+#             raise NotAuthenticated("User is not authenticated")
+        
+#         print("test user authenticated")
+        
+#         return data
+
+class SupplierSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Supplier
+        fields = '__all__'
+
+class ArticleFamilySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleFamily
+        fields = '__all__'
+
+class ArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = '__all__'
+
+class StockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Stock
+        fields = '__all__'
+
+class EntryVoucherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntryVoucher
+        fields = '__all__'
+
+class ExitRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExitRequest
+        fields = '__all__'
+
+class ExitVoucherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExitVoucher
+        fields = '__all__'
+
+class ReturnRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReturnRequest
+        fields = '__all__'
+
+class ReturnVoucherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReturnVoucher
+        fields = '__all__'
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = '__all__'
