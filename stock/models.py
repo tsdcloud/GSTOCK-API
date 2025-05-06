@@ -1,3 +1,4 @@
+from email.policy import default
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
@@ -113,7 +114,7 @@ class Stock(models.Model):
     initial_stock = models.IntegerField(default=0)
     stock_variation = models.IntegerField(default=0)
     final_stock = models.IntegerField(default=0)
-    article = models.OneToOneField(Article, on_delete=models.CASCADE, related_name='stock')
+    article = models.UUIDField(default=None, blank=True, unique=True)
     is_active = models.BooleanField(default=True) 
 
 
@@ -132,13 +133,15 @@ class EntryVoucher(models.Model):
     updated_by = models.UUIDField(editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    # supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    supplier = models.UUIDField(default=None, blank=True)
+    article = models.UUIDField(default=None, blank=True)
     is_active = models.BooleanField(default=True) 
 
 class ExitRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    # article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    article = models.UUIDField(default=None, blank=True)
     quantity = models.IntegerField()
     description = models.TextField()
     request_code = models.CharField(max_length=50, unique=True, null=True)
@@ -160,7 +163,8 @@ class ExitVoucher(models.Model):
 
 class ReturnRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    # article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    article = models.UUIDField(default=None, blank=True)
     employee = models.UUIDField(default=None, blank=True)
     quantity = models.IntegerField()
     status = models.CharField(max_length=50)

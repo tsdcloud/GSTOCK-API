@@ -192,12 +192,12 @@ class ArticleViewSet(BaseViewSet):
             quantity = int(request.data.get('initial_stock', 0))
 
             # Create an initial stock for the article
-            stock_data = {
-                'article': article,
-                'initial_stock': quantity,
-                'final_stock': quantity
-            }
-            Stock.objects.create(**stock_data)
+            # stock_data = {
+            #     'article': article,
+            #     'initial_stock': quantity,
+            #     'final_stock': quantity
+            # }
+            # Stock.objects.create(**stock_data)
 
             return Response(
                 {
@@ -215,6 +215,47 @@ class ArticleViewSet(BaseViewSet):
 class StockViewSet(BaseViewSet):
     queryset = Stock.objects.all().order_by("id")
     serializer_class = StockSerializer
+
+    def list(self, request, *args, **kwargs):
+
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+
+        queryset = self.get_queryset()
+        return self.paginate_queryset_response(queryset, request, self.serializer_class)
+    
+    def create(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        # Serialize article data
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            # article = request.data.get('article')
+            # quantity = int(request.data.get('initial_stock', 0))
+
+            # # Create an initial stock for the article
+            # stock_data = {
+            #     'article': article,
+            #     'initial_stock': quantity,
+            #     'final_stock': quantity
+            # }
+            # Stock.objects.create(**stock_data)
+
+            serializer.save()
+
+            return Response(
+                {
+                    "success": True,
+                    "message": "Stock created and initialized.",
+                    "stock": serializer.data
+                },
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EntryVoucherViewSet(BaseViewSet):
@@ -296,16 +337,16 @@ class ExitRequestViewSet(BaseViewSet):
         )
 
         # Retourner les données mises à jour
-        # return Response({
-        #     "success": True,
-        #     "exit_request": serializer.data,
-        #     "exit_voucher": {
-        #         "id": exit_voucher.id,
-        #         "reference_number": exit_voucher.reference_number,
-        #         "quantity": exit_voucher.quantity,
-        #         "description": exit_voucher.description
-        #     }
-        # }, status=status.HTTP_201_CREATED)
+        return Response({
+            "success": True,
+            "exit_request": serializer.data,
+            "exit_voucher": {
+                "id": exit_voucher.id,
+                "reference_number": exit_voucher.reference_number,
+                "quantity": exit_voucher.quantity,
+                "description": exit_voucher.description
+            }
+        }, status=status.HTTP_201_CREATED)
 
 
 class ExitVoucherViewSet(BaseViewSet):
@@ -354,6 +395,18 @@ class ReturnRequestViewSet(BaseViewSet):
             employee=self.request.user.id_employee,
             status=status
         )
+
+        # Retourner les données mises à jour
+        return Response({
+            "success": True,
+            "return_request": serializer.data,
+            "return_voucher": {
+                "id": return_voucher.id,
+                "reference_number": return_voucher.reference_number,
+                "quantity": return_voucher.quantity,
+                "description": return_voucher.description
+            }
+        }, status=status.HTTP_201_CREATED)
 
 
 class ReturnVoucherViewSet(BaseViewSet):
