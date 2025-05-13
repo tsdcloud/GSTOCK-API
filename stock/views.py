@@ -497,7 +497,7 @@ class ReturnRequestViewSet(BaseViewSet):
         stock_article = Stock.objects.filter(article=article).first()
 
         if not stock_article:
-            return ValidationError({
+            raise ValidationError({
                 "success": False,
                 "detail": "Stock record not found for this article!",
             })
