@@ -47,10 +47,10 @@ class ExitRequestSerializer(serializers.ModelSerializer):
 
 class ExitVoucherSerializer(serializers.ModelSerializer):
     article = serializers.CharField(source='exit_request.article')
-    request_code = serializers.CharField(source='exit_request.name')
+    request_code = serializers.CharField(source='exit_request.request_code')
     class Meta:
         model = ExitVoucher
-        fields = ['__all__', 'article', 'request_code']
+        fields = ['id', 'quantity', 'reference_number', 'created_by', 'updated_by', 'exit_request', 'created_at', 'updated_at', 'employee', 'description', 'is_active', 'article', 'request_code']
 
 class ReturnRequestSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,7 +61,8 @@ class ReturnVoucherSerializer(serializers.ModelSerializer):
     article = serializers.CharField(source='return_request.article')
     class Meta:
         model = ReturnVoucher
-        fields = ['__all__', 'article']
+        fields = ['id', 'quantity', 'reference_number', 'created_by', 'updated_by', 'return_request', 'created_at', 'updated_at', 'employee', 'description', 'is_active', 'article', 'status']
+
 
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
