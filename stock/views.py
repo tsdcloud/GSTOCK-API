@@ -198,12 +198,14 @@ class ArticleViewSet(BaseViewSet):
             #     'final_stock': quantity
             # }
             # Stock.objects.create(**stock_data)
+        
+            article = serializer.save()
 
             return Response(
                 {
                     "success": True,
                     "message": "Article created and stock initialized.",
-                    "article": serializer.data
+                    "article": ArticleSerializer(article).data
                 },
                 status=status.HTTP_201_CREATED
             )
@@ -261,13 +263,13 @@ class StockViewSet(BaseViewSet):
             # }
             # Stock.objects.create(**stock_data)
 
-            serializer.save()
+            stock_created = serializer.save()
 
             return Response(
                 {
                     "success": True,
                     "message": "Stock created and initialized.",
-                    "stock": serializer.data
+                    "stock": StockSerializer(stock_created).data
                 },
                 status=status.HTTP_201_CREATED
             )
@@ -296,7 +298,11 @@ class EntryVoucherViewSet(BaseViewSet):
     queryset = EntryVoucher.objects.all().order_by("id")
     serializer_class = EntryVoucherSerializer
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
         # Génération du numéro de référence automatique
         reference_number = generate_unique_num_ref(EntryVoucher)
         
@@ -313,15 +319,40 @@ class EntryVoucherViewSet(BaseViewSet):
             stock_article.stock_variation = entry_voucher.quantity
             stock_article.final_stock += entry_voucher.quantity
             stock_article.save()
-        
+        else:
+            raise ValidationError({
+                "success": False,
+                "detail": "Stock record not found for this article!",
+            })
+                
         # print("stock_article" , stock_article.final_stock)
-
-        return Response(serializer.data)
     
-    def perform_update(self, serializer):
-        # Mise à jour de l'utilisateur
-        entry_voucher = serializer.save(updated_by=self.request.user.id_employee)
-        return Response(serializer.data)
+        return Response({
+            "success": True,
+            "data": EntryVoucherSerializer(entry_voucher).data
+        }, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+
+        # Récupère l'instance à mettre à jour
+        instance = self.get_object()
+
+        # Crée le serializer avec l'instance + les nouvelles données
+        serializer = self.get_serializer(instance, data=request.data, partial=False)  # ou `partial=True` si tu veux autoriser les updates partiels
+
+        # Valide les données
+        serializer.is_valid(raise_exception=True)
+
+        # Enregistre avec mise à jour de l'utilisateur
+        updated_instance = serializer.save(updated_by=self.request.user.id_employee)
+
+        return Response({
+            "success": True,
+            "data": self.get_serializer(updated_instance).data
+        }, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
         auth_error = self.check_authentication()
@@ -345,18 +376,25 @@ class ExitRequestViewSet(BaseViewSet):
     queryset = ExitRequest.objects.all().order_by("id")
     serializer_class = ExitRequestSerializer
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+
         article = serializer.validated_data['article']
         quantity = serializer.validated_data['quantity']
         description = serializer.validated_data['description']
+        description = serializer.validated_data['request_code']
+
 
         # Vérification de l'existence du stock
         stock_article = Stock.objects.filter(article=article).first()
         if not stock_article:
-            return ValidationError({
+            raise ValidationError({
                 "success": False,
                 "detail": "Stock record not found for this article!",
-            }, status=status.HTTP_400_BAD_REQUEST)
+            })
 
         # Vérification de la quantité en stock
         if stock_article.final_stock < quantity:
@@ -390,7 +428,7 @@ class ExitRequestViewSet(BaseViewSet):
         # Retourner les données mises à jour
         return Response({
             "success": True,
-            "exit_request": serializer.data,
+            "exit_request": ExitRequestSerializer(exit_request).data,
             "exit_voucher": {
                 "id": exit_voucher.id,
                 "reference_number": exit_voucher.reference_number,
@@ -398,6 +436,7 @@ class ExitRequestViewSet(BaseViewSet):
                 "description": exit_voucher.description
             }
         }, status=status.HTTP_201_CREATED)
+
 
 
     def delete(self, request, *args, **kwargs):
@@ -444,7 +483,11 @@ class ReturnRequestViewSet(BaseViewSet):
     queryset = ReturnRequest.objects.all().order_by("id")
     serializer_class = ReturnRequestSerializer
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         article = serializer.validated_data['article']
         quantity = serializer.validated_data['quantity']
         description = serializer.validated_data['description']
@@ -485,7 +528,7 @@ class ReturnRequestViewSet(BaseViewSet):
         # Retourner les données mises à jour
         return Response({
             "success": True,
-            "return_request": serializer.data,
+            "return_request": ReturnRequestSerializer(return_request).data,
             "return_voucher": {
                 "id": return_voucher.id,
                 "reference_number": return_voucher.reference_number,
