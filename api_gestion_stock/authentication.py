@@ -48,7 +48,7 @@ class ExternalAPIAuthentication(BaseAuthentication):
 
                 user_data = user_info_request.json().get("data", {})
 
-                employee_info = requests.get(INTITY_API_URL, headers=headers_verify, timeout=5)
+                employee_info = requests.get(INTITY_API_URL, headers=headers_user_info, timeout=5)
 
 
                 # Convert JSON string to Python dictionary

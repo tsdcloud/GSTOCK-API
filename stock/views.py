@@ -448,7 +448,7 @@ class ReturnRequestViewSet(BaseViewSet):
         article = serializer.validated_data['article']
         quantity = serializer.validated_data['quantity']
         description = serializer.validated_data['description']
-        status = serializer.validated_data['status']
+        r_status = serializer.validated_data['status']
 
         # Vérification de l'existence du stock
         stock_article = Stock.objects.filter(article=article).first()
@@ -479,7 +479,7 @@ class ReturnRequestViewSet(BaseViewSet):
             description=description,
             return_request=return_request,
             employee=self.request.user.id_employee,
-            status=status
+            status=r_status
         )
 
         # Retourner les données mises à jour
@@ -511,6 +511,16 @@ class ReturnRequestViewSet(BaseViewSet):
             {"detail": "L'objet a été supprimé avec succès (soft delete)."},
             status=status.HTTP_204_NO_CONTENT
         )
+
+
+    def list(self, request, *args, **kwargs):
+
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+
+        queryset = self.get_queryset()
+        return self.paginate_queryset_response(queryset, request, self.serializer_class)
 
 
 class ReturnVoucherViewSet(BaseViewSet):
