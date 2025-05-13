@@ -3,6 +3,8 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
+from api_gestion_stock.models import BaseUUIDModel
+
 
 class CustomUserManager(BaseUserManager):
     """
@@ -89,19 +91,19 @@ class CustomUser(AbstractUser):
     class Meta:
         ordering = ['-date_joined']
 
-class Supplier(models.Model):
+class Supplier(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True) 
 
-class ArticleFamily(models.Model):
+class ArticleFamily(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=50, unique=True)
     is_active = models.BooleanField(default=True) 
 
-class Article(models.Model):
+class Article(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=50, unique=True)
@@ -109,7 +111,7 @@ class Article(models.Model):
     family = models.OneToOneField(ArticleFamily, on_delete=models.CASCADE, related_name='articles')
     is_active = models.BooleanField(default=True) 
 
-class Stock(models.Model):
+class Stock(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     initial_stock = models.IntegerField(default=0)
     stock_variation = models.IntegerField(default=0)
@@ -118,12 +120,12 @@ class Stock(models.Model):
     is_active = models.BooleanField(default=True) 
 
 
-class Service(models.Model):
+class Service(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True) 
 
-class EntryVoucher(models.Model):
+class EntryVoucher(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quantity = models.IntegerField()
     description = models.TextField()
@@ -138,7 +140,7 @@ class EntryVoucher(models.Model):
     article = models.UUIDField(default=None, blank=True)
     is_active = models.BooleanField(default=True) 
 
-class ExitRequest(models.Model):
+class ExitRequest(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # article = models.ForeignKey(Article, on_delete=models.CASCADE)
     article = models.UUIDField(default=None, blank=True)
@@ -147,7 +149,7 @@ class ExitRequest(models.Model):
     request_code = models.CharField(max_length=50, unique=True, null=True)
     is_active = models.BooleanField(default=True) 
 
-class ExitVoucher(models.Model):
+class ExitVoucher(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quantity = models.IntegerField()
     reference_number = models.CharField(max_length=50, unique=True, editable=False)
@@ -161,7 +163,7 @@ class ExitVoucher(models.Model):
     description = models.TextField()
     is_active = models.BooleanField(default=True) 
 
-class ReturnRequest(models.Model):
+class ReturnRequest(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # article = models.ForeignKey(Article, on_delete=models.CASCADE)
     article = models.UUIDField(default=None, blank=True)
@@ -171,7 +173,7 @@ class ReturnRequest(models.Model):
     description = models.TextField()
     is_active = models.BooleanField(default=True) 
 
-class ReturnVoucher(models.Model):
+class ReturnVoucher(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quantity = models.IntegerField()
     reference_number = models.CharField(max_length=50, unique=True, editable=False)

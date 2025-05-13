@@ -210,6 +210,23 @@ class ArticleViewSet(BaseViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+    
 
 
 class StockViewSet(BaseViewSet):
@@ -256,6 +273,23 @@ class StockViewSet(BaseViewSet):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class EntryVoucherViewSet(BaseViewSet):
@@ -288,6 +322,23 @@ class EntryVoucherViewSet(BaseViewSet):
         # Mise à jour de l'utilisateur
         entry_voucher = serializer.save(updated_by=self.request.user.id_employee)
         return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class ExitRequestViewSet(BaseViewSet):
@@ -349,9 +400,44 @@ class ExitRequestViewSet(BaseViewSet):
         }, status=status.HTTP_201_CREATED)
 
 
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
 class ExitVoucherViewSet(BaseViewSet):
     queryset = ExitVoucher.objects.all().order_by("id")
     serializer_class = ExitVoucherSerializer
+
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class ReturnRequestViewSet(BaseViewSet):
@@ -409,9 +495,44 @@ class ReturnRequestViewSet(BaseViewSet):
         }, status=status.HTTP_201_CREATED)
 
 
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
 class ReturnVoucherViewSet(BaseViewSet):
     queryset = ReturnVoucher.objects.all().order_by("id")
     serializer_class = ReturnVoucherSerializer
+
+    def delete(self, request, *args, **kwargs):
+        auth_error = self.check_authentication()
+        if auth_error:
+            return auth_error
+        
+        instance = self.get_object()
+
+        # Mettre à jour le statut de l'instance (soft delete)
+        instance.is_active = False
+        instance.save()
+
+        # Retourner une réponse indiquant que l'opération a réussi
+        return Response(
+            {"detail": "L'objet a été supprimé avec succès (soft delete)."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 # class ServiceViewSet(BaseViewSet):
