@@ -588,6 +588,24 @@ class ReturnVoucherViewSet(BaseViewSet):
         )
 
 
-# class ServiceViewSet(BaseViewSet):
-#     queryset = Service.objects.all().order_by("id")
-#     serializer_class = ServiceSerializer
+class StockArticleAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, article_id):
+
+        stock = Stock.objects.filter(article=article_id).first()
+
+        if not stock:
+            raise ValidationError({
+                "success": False,
+                "detail": "Stock with this article id not found!",
+            })
+        
+        return Response(
+            {
+                "success": True,
+                "data": StockSerializer(stock).data,
+            },
+            status=status.HTTP_200_OK
+        )

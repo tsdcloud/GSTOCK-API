@@ -5,7 +5,7 @@ from django.conf.urls import handler404
 
 from api_gestion_stock.router import OptionalSlashRouter
 
-from stock.views import SupplierViewSet, ArticleFamilyViewSet, ArticleViewSet, StockViewSet, EntryVoucherViewSet, ExitRequestViewSet, ExitVoucherViewSet, ReturnRequestViewSet, ReturnVoucherViewSet
+from stock.views import SupplierViewSet, ArticleFamilyViewSet, ArticleViewSet, StockViewSet, EntryVoucherViewSet, ExitRequestViewSet, ExitVoucherViewSet, ReturnRequestViewSet, ReturnVoucherViewSet, StockArticleAPIView
 
 
 router = OptionalSlashRouter()
@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include(router.urls)),
+    path('api/stock_article/<uuid:article_id>/', StockArticleAPIView.as_view(), name="stock_for_an_article"),
 
     # path('suppliers/', SupplierViewSetAPIView.as_view(), name="supplier_api_views")
 ]
