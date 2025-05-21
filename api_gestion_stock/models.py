@@ -45,9 +45,9 @@ class BaseUUIDModel(models.Model):
         date_fin = date_debut + timedelta(days=x)
         return (date_debut, date_fin)
 
-    def delete(self, user: str):
-        """ delete """
-        self.is_active = False
-        # self.save(user=user, action="CHANGE")
-        return self
+    # def delete(self, user: str):
+    #     """ delete """
+    #     self.is_active = False
+    #     self.save(user=user, action="CHANGE")
+    #     return self
 
