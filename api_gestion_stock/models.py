@@ -48,6 +48,6 @@ class BaseUUIDModel(models.Model):
     def delete(self, user: str):
         """ delete """
         self.is_active = False
-        self.save(user=user, action="CHANGE")
+        # self.save(user=user, action="CHANGE")
         return self
 
