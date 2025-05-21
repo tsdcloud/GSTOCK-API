@@ -2,6 +2,7 @@ from email.policy import default
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from pkg_resources import require
 
 from api_gestion_stock.models import BaseUUIDModel
 
@@ -138,7 +139,8 @@ class EntryVoucher(BaseUUIDModel):
     # supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     supplier = models.UUIDField(default=None, blank=True)
     article = models.UUIDField(default=None, blank=True)
-    is_active = models.BooleanField(default=True) 
+    is_active = models.BooleanField(default=True)
+
 
 class ExitRequest(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -148,6 +150,7 @@ class ExitRequest(BaseUUIDModel):
     description = models.TextField()
     request_code = models.CharField(max_length=50, unique=True, null=True)
     is_active = models.BooleanField(default=True) 
+    applicant = models.UUIDField(null=True, blank=True)
 
 class ExitVoucher(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -162,6 +165,7 @@ class ExitVoucher(BaseUUIDModel):
     employee = models.UUIDField(default=None, blank=True)
     description = models.TextField()
     is_active = models.BooleanField(default=True) 
+    applicant = models.UUIDField(null=True, blank=True)
 
 class ReturnRequest(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -172,6 +176,7 @@ class ReturnRequest(BaseUUIDModel):
     status = models.CharField(max_length=50)
     description = models.TextField()
     is_active = models.BooleanField(default=True) 
+    applicant = models.UUIDField(null=True, blank=True)
 
 class ReturnVoucher(BaseUUIDModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -187,3 +192,4 @@ class ReturnVoucher(BaseUUIDModel):
     return_request = models.ForeignKey(ReturnRequest, on_delete=models.CASCADE, related_name='return_requests', null=True)
     description = models.TextField()
     is_active = models.BooleanField(default=True) 
+    applicant = models.UUIDField(null=True, blank=True)

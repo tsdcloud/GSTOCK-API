@@ -386,6 +386,13 @@ class ExitRequestViewSet(BaseViewSet):
         quantity = serializer.validated_data['quantity']
         description = serializer.validated_data['description']
         description = serializer.validated_data['request_code']
+        applicant = serializer.validated_data['applicant']
+
+        if not applicant:
+            raise ValidationError({
+                "success": False,
+                "detail": "Applicant is required !!",
+            })
 
 
         # Vérification de l'existence du stock
@@ -422,7 +429,8 @@ class ExitRequestViewSet(BaseViewSet):
             updated_by=self.request.user.id_employee,
             description=description,
             exit_request=exit_request,
-            employee=self.request.user.id_employee
+            employee=self.request.user.id_employee,
+            applicant=applicant
         )
 
         # Retourner les données mises à jour
@@ -492,6 +500,13 @@ class ReturnRequestViewSet(BaseViewSet):
         quantity = serializer.validated_data['quantity']
         description = serializer.validated_data['description']
         r_status = serializer.validated_data['status']
+        applicant = serializer.validated_data['applicant']
+
+        if not applicant:
+            raise ValidationError({
+                "success": False,
+                "detail": "Applicant is required !!",
+            })
 
         # Vérification de l'existence du stock
         stock_article = Stock.objects.filter(article=article).first()
@@ -522,7 +537,8 @@ class ReturnRequestViewSet(BaseViewSet):
             description=description,
             return_request=return_request,
             employee=self.request.user.id_employee,
-            status=r_status
+            status=r_status,
+            applicant=applicant
         )
 
         # Retourner les données mises à jour
