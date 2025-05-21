@@ -1,8 +1,8 @@
-from email.policy import default
+# from email.policy import default
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from pkg_resources import require
+# from pkg_resources import require
 
 from api_gestion_stock.models import BaseUUIDModel
 
